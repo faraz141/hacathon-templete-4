@@ -39,14 +39,14 @@ function FeaturedProducts() {
   ];
 
   return (
-    <div className="w-[80%] lg:w-[1177px] mx-auto bg-white py-20">
+    <div className="w-full md:w-[80%] lg:w-[1177px] mx-auto bg-white py-20">
       {/* Heading */}
-      <h2 className="text-[#1a0b5b] text-[42px] leading-[49.22px] text-center mb-12 font-bold">
+      <h2 className="text-[#1a0b5b] text-[32px] md:text-[42px] leading-[49.22px] text-center mb-12 font-bold">
         Featured Products
       </h2>
 
       {/* Product Grid */}
-      <div className="w-full max-w-screen-xl mx-auto grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-8">
+      <div className="w-full max-w-screen-xl mx-auto grid grid-cols-1 sm:grid-cols-2 place-items-center lg:grid-cols-4 gap-8">
         {products.map((product) => (
           <div key={product.id} className="relative group">
             {/* Product Image with Icons */}

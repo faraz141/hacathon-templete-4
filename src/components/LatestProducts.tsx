@@ -25,12 +25,12 @@ function LatestProducts() {
         </h2>
 
         {/* Tabs */}
-        <div className="  flex justify-center space-x-8 mb-16">
+        <div className="  flex justify-center space-x-2  md:space-x-8  mb-16">
           {['New Arrival', 'Best Seller', 'Featured', 'Special Offers'].map(
             (tab) => (
               <button
                 key={tab}
-                className="text-[#3F509E] text-lg font-medium relative group hover:text-red-600"
+                className="text-[#3F509E] text-sm md:text-lg font-medium relative group hover:text-red-600"
               >
                 {tab}
                 {/* Underline */}
@@ -41,7 +41,7 @@ function LatestProducts() {
         </div>
 
         {/* Product Grid */}
-        <div className="w-[80%] lg:w-[1177px] max-w-screen-xl mx-auto grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-8">
+        <div className="w-full md:w-[80%] lg:w-[1177px] max-w-screen-xl mx-auto place-items-center grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-8">
           {products.map((product, index) => (
             <div key={product.id} className="relative group">
               {/* Product Image */}

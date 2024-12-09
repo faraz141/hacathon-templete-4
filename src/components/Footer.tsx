@@ -9,13 +9,13 @@ interface FooterProps {
 const Footer: React.FC<FooterProps> = () => {
   return (
     <div className=" ">
-      <div className="w-full flex items-center justify-center bg-[#eeeffb] gap-8 h-[479px]">
-        <div className="w-[1177px] flex flex-row items-start mt-[95px] justify-between">
+      <div className="w-full flex items-center justify-center bg-[#eeeffb] gap-8 lg:h-[479px]">
+        <div className=" w-[80%] lg:w-[1177px] flex flex-row flex-wrap items-start mt-[95px] justify-between">
           <div className="col-span-1">
             <h1 className="text-[38px] font-sans leading-10 text-[#000000] font-bold ">
               Hekto
             </h1>
-            <div className="w-[377px] h-[44px] my-[30px] bg-white flex items-center justify-center">
+            <div className="w-full md:w-[377px] h-[44px] my-[30px] bg-white flex flex-row items-center justify-center">
               <input
                 className="w-full bg-white text-[#8a8fb9] text-[16px] leading-5 font-normal rounded-[3px] opacity-45"
                 type="email"

@@ -79,7 +79,7 @@ function Navbar() {
             </li>
             <li className="p-2 hover:underline hover:text-pink-600 underline-offset-2">
               <Link
-                href="/products"
+                href="/product"
                 className="flex items-center justify-center group"
               >
                 Products{' '}

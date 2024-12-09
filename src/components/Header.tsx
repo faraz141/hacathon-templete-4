@@ -8,7 +8,7 @@ import Link from 'next/link';
 const Header = () => {
   return (
     <div className="2xl:w-[1920px] h-[44px] w-[100%]  bg-[#7E33E0] text-[#f1f1f1] flex justify-center items-center">
-      <div className="w-[1177px] 2xl:w-[1177px] flex flex-col justify-center  lg:flex-row md:justify-between items-center ">
+      <div className="w-full md:w-[80%] 2xl:w-[1177px] flex flex-col justify-center  lg:flex-row md:justify-between items-center ">
         <div className="w-[30%] lg:w-[380px] flex items-center justify-center lg:justify-start">
           <div className="flex items-center justify-center gap-3 mr-10 ">
             <span className="w-4 h-4 text-[#ffffff]">

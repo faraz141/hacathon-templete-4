@@ -18,25 +18,14 @@ function Newslater() {
 
           {/* Subscribe Button */}
           <Link href="/shoplist">
-          <button className="bg-[#FB2E86] text-white px-6 py-2 rounded-non text-lg font-medium">
-            Shop Now
-          </button>
+            <button className="bg-[#FB2E86] text-white px-6 py-2 rounded-non text-lg font-medium">
+              Shop Now
+            </button>
           </Link>
         </div>
       </div>
 
       {/* Logos Section */}
-      <div className="w-full py-12">
-        <div className="max-w-screen-xl mx-auto flex justify-center">
-          <Image
-            src="/images/logo.png"
-            alt="Logos"
-            width={800} // Adjust as per your design
-            height={100} // Adjust as per your design
-            className="object-contain"
-          />
-        </div>
-      </div>
     </div>
   );
 }

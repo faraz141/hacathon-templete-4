@@ -1,19 +1,18 @@
-import BlogSection from '@/components/BlogSection';
+import React from 'react';
+// import BlogSection from '@/components/BlogSection';
 import Discount from '@/components/Discount';
 import FeaturedProducts from '@/components/Feautreprod';
-import Hero from '@/components/Hero';
+// import Hero from '@/components/Hero';
 import LatestProducts from '@/components/LatestProducts';
 import Newslater from '@/components/Newslater';
 import Offer from '@/components/Offers';
 import TopCategories from '@/components/TopCategories';
 import TrendingProducts from '@/components/TrendingProducts';
 import Unique from '@/components/Unique';
-import Image from 'next/image';
-
-export default function Home() {
+// import Image from 'next/image';
+const page = () => {
   return (
-    <div className="overflow-x-hidden">
-      <Hero />
+    <div>
       <FeaturedProducts />
       <LatestProducts />
       <Offer />
@@ -22,7 +21,8 @@ export default function Home() {
       <Discount />
       <TopCategories />
       <Newslater />
-      <BlogSection />
     </div>
   );
-}
+};
+
+export default page;
