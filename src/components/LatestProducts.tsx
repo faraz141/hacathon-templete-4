@@ -41,7 +41,7 @@ function LatestProducts() {
         </div>
 
         {/* Product Grid */}
-        <div className="w-full md:w-[80%] lg:w-[1177px] max-w-screen-xl mx-auto place-items-center grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-8">
+        <div className="w-full md:w-[80%] lg:w-[1177px] max-w-screen-xl mx-auto place-items-center grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
           {products.map((product, index) => (
             <div
               key={product.id}

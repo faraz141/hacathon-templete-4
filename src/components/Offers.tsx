@@ -42,20 +42,21 @@ function Offer() {
       </h2>
 
       {/* Offer Boxes */}
-      <div className="w-[80%] lg:w-[1177px] max-w-screen-xl mx-auto grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-8">
+      <div className="w-[80%] lg:w-[1177px] max-w-screen-xl mx-auto grid grid-cols-1 sm:grid-cols-2 place-items-center lg:grid-cols-4 gap-8">
         {offers.map((offer) => (
           <div
             key={offer.id}
-            className="flex flex-col items-center text-center border border-gray-200 p-6 rounded-lg shadow-lg"
+            className="flex flex-col items-center justify-center  text-center  w-[270px] h-[320px]   rounded-lg shadow-custom"
           >
+            {/* <div className="mx-5"> */}
             {/* Icon */}
-            <div className="w-16 h-16 mb-4">
+            <div className="w-16 h-16 mb-4 ">
               <Image
                 src={offer.icon}
                 alt={offer.title}
                 width={64}
                 height={64}
-                className="object-contain"
+                className="object-contain "
               />
             </div>
             {/* Heading */}
@@ -63,8 +64,9 @@ function Offer() {
               {offer.title}
             </h3>
             {/* Description */}
-            <p className="text-gray-600 text-sm">{offer.description}</p>
+            <p className="text-gray-600 mx-4 text-sm">{offer.description}</p>
           </div>
+          // </div>
         ))}
       </div>
     </div>

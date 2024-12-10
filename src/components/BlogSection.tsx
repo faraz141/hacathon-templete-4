@@ -46,7 +46,10 @@ function BlogSection() {
       {/* Blog Grid */}
       <div className="w-[80%] lg:w-[1177px] grid grid-cols-1 md:grid-cols-3 gap-8 max-w-screen-xl mx-auto">
         {blogs.map((blog) => (
-          <div key={blog.id} className="flex flex-col items-start">
+          <div
+            key={blog.id}
+            className="w-[370px] h-[493px] flex flex-col items-start"
+          >
             {/* Blog Image */}
             <div className="w-full h-[300px] relative rounded-lg shadow-md bg-white p-2">
               <Image

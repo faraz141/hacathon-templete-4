@@ -25,7 +25,7 @@ function Discount() {
         </div>
 
         {/* Main Content */}
-        <div className="flex items-center justify-center flex-col md:flex-row md:justify-between ">
+        <div className="flex items-center justify-center flex-col-reverse md:flex-row md:justify-between ">
           {/* Left Side - Text Section */}
           <div className="text-center md:text-left">
             <h3 className="text-[#3F509E] text-3xl font-bold mb-4">

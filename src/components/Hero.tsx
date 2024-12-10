@@ -1,53 +1,149 @@
-import React from "react";
+'use client';
+import { useState, useEffect } from 'react';
+import Image from 'next/image';
+import Link from 'next/link';
 
-const Hero = () => {
+const slides = [
+  {
+    title: 'New Furniture Collection Trends in 2020',
+    description:
+      'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Magna in est adipiscing in phasellus non in justo.',
+    buttonText: 'Shop Now',
+    chairImage: '/images/sofa copy.png',
+    lampImage: '/images/lamp.png',
+  },
+  {
+    title: 'Modern Chair Designs for Your Home',
+    description:
+      'Discover the latest modern furniture trends to elevate your living space.',
+    buttonText: 'Shop Now',
+    chairImage: '/images/sofa.png',
+    lampImage: '/images/lamp.png',
+  },
+  {
+    title: 'Elegant Furniture for Every Space',
+    description:
+      'Bring timeless elegance to your home with our exclusive furniture collection.',
+    buttonText: 'Shop Now',
+    chairImage: '/images/sofa3.png',
+    lampImage: '/images/lamp.png',
+  },
+];
+
+function HeroSection() {
+  const [currentSlide, setCurrentSlide] = useState(0);
+  const [isAnimating, setIsAnimating] = useState(false);
+
+  // Automatically change slides every 2 seconds
+  useEffect(() => {
+    const interval = setInterval(() => {
+      handleNextSlide();
+    }, 5000);
+
+    return () => clearInterval(interval); // Cleanup on unmount
+  }, []);
+
+  const handleNextSlide = () => {
+    setIsAnimating(true); // Start animation
+    setTimeout(() => {
+      setCurrentSlide((prevSlide) => (prevSlide + 1) % slides.length);
+      setIsAnimating(false); // End animation
+    }, 500); // Match the CSS animation duration
+  };
+
+  const handlePrevSlide = () => {
+    setIsAnimating(true); // Start animation
+    setTimeout(() => {
+      setCurrentSlide((prevSlide) =>
+        prevSlide === 0 ? slides.length - 1 : prevSlide - 1,
+      );
+      setIsAnimating(false); // End animation
+    }, 500); // Match the CSS animation duration
+  };
+
+  const current = slides[currentSlide];
+
   return (
-    <section className="bg-light-purple-100 py-16">
-      <div className="container mx-auto px-4 flex items-center justify-between">
-        {/* Left Section */}
-        <div className="flex items-start gap-10">
-          {/* Lamp Image */}
-          <div>
-            <img
-              src="/images/lamp.png"
-              alt="Lamp"
-              className="w-32 h-32 object-contain"
-            />
-          </div>
-
-          {/* Text Section */}
-          <div className="max-w-lg">
-            <p className="text-pink-500 font-semibold mb-4">
-              Best Furniture For Your Castle...
-            </p>
-            <h1 className="text-4xl font-bold mb-4 leading-tight">
-              New Furniture Collection <br />
-              Trends in 2020
-            </h1>
-            <p className="text-gray-600 mb-6">
-              Lorem ipsum dolor sit amet, consectetur adipiscing elit. Magna in
-              est adipiscing in phasellus non in justo.
-            </p>
-            <button className="bg-pink-500 text-white px-6 py-3 font-semibold rounded-md">
-              Shop Now
-            </button>
-          </div>
-        </div>
-
-        {/* Right Section */}
-        <div className="relative">
-          <img
-            src="/images/cover.png"
-            alt="Furniture"
-            className="w-full max-w-md rounded-md"
+    <section className="relative lg:h-[80vh] bg-gray-100 py-10 md:py-20 px-5 md:px-20 flex flex-col md:flex-row items-center justify-between overflow-hidden">
+      {/* Left Column: Lamp */}
+      <div className="md:w-1/4 flex justify-center items-start relative">
+        <div className="absolute top-[-350px] left-[-40px] z-10">
+          <Image
+            src={current.lampImage}
+            alt="Lamp"
+            width={387}
+            height={387}
+            className="object-contain"
           />
-          <div className="absolute top-8 right-8 bg-blue-500 text-white text-sm font-bold px-4 py-2 rounded-full">
-            50% off
-          </div>
         </div>
       </div>
+      {/* Center Column: Content */}
+      <div
+        className={`md:w-1/3 max-w-lg text-center md:text-left flex flex-col justify-center transition-transform duration-500 ${
+          isAnimating ? 'animate-slide-in' : ''
+        }`}
+      >
+        <p className="text-sm text-pink-500 font-medium">
+          Best Furniture For Your Castle...
+        </p>
+        <h1 className="text-3xl md:text-4xl font-bold text-indigo-950 leading-tight mt-2">
+          {current.title}
+        </h1>
+        <p className="text-gray-600 text-sm mt-4 leading-relaxed">
+          {current.description}
+        </p>
+        <Link
+          href="#"
+          className="inline-block bg-pink-500 text-white text-sm font-medium py-3 px-6 rounded-md mt-6 hover:bg-pink-600 transition-all duration-300 w-1/3 text-center"
+        >
+          {current.buttonText}
+        </Link>
+      </div>
+      {/* Right Column: Chair Image */}
+      <div
+        className={`md:w-1/3 flex justify-center items-center relative transition-transform duration-500 ${
+          isAnimating ? 'animate-slide-in' : ''
+        }`}
+      >
+        <div className="relative bg-gradient-to-r from-pink-100 to-purple-200 rounded-full p-10 shadow-xl mt-10 mx-auto">
+          <Image
+            src={current.chairImage}
+            alt="Furniture Chair"
+            width={680}
+            height={670}
+            className="object-contain w-full h-auto"
+          />
+        </div>
+      </div>
+      {/* Navigation Dots */}
+      <div className="absolute bottom-5 left-1/2 transform -translate-x-1/2 flex space-x-2">
+        {slides.map((_, index) => (
+          <button
+            key={index}
+            onClick={() => setCurrentSlide(index)}
+            className={`w-3 h-3 rounded-full ${
+              currentSlide === index
+                ? 'bg-pink-500'
+                : 'bg-gray-300 hover:bg-gray-400'
+            }`}
+          ></button>
+        ))}
+      </div>
+      {/* Navigation Arrows */}
+      {/* <button
+        onClick={handlePrevSlide}
+        className="absolute left-5 top-1/2 transform -translate-y-1/2 bg-white border border-gray-300 rounded-full p-2 hover:bg-gray-100"
+      >
+        ❮
+      </button>
+      <button
+        onClick={handleNextSlide}
+        className="absolute right-5 top-1/2 transform -translate-y-1/2 bg-white border border-gray-300 rounded-full p-2 hover:bg-gray-100"
+      >
+        ❯
+      </button> */}
     </section>
   );
-};
+}
 
-export default Hero;
+export default HeroSection;
