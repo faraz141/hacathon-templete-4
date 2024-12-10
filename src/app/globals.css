@@ -7,6 +7,22 @@
   --background-start-rgb: 214, 219, 220;
   --background-end-rgb: 255, 255, 255;
 }
+.sale-ribbon {
+  background-color: #1e3a8a; /* Tailwind's blue-600 */
+  color: white;
+  padding: 0.5rem 1.5rem;
+  text-align: center;
+  font-size: 14px;
+  font-weight: bold;
+  display: inline-block;
+  position: relative;
+  clip-path: path(
+    'M10 0 C30 0, 70 0, 90 0 Q100 25, 90 50 C70 50, 30 50, 10 50 Q0 25, 10 0 Z'
+  ); /* Wavy shape */
+  width: 100px; /* Adjust width as needed */
+  height: 50px; /* Adjust height as needed */
+  transform: rotate(-10deg); /* Add slight tilt */
+}
 
 @media (prefers-color-scheme: dark) {
   :root {
