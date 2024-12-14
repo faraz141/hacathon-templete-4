@@ -24,7 +24,7 @@ function Navbar() {
   const handleMouseLeave = () => {
     dropdownTimeout.current = setTimeout(() => {
       setIsPagesDropdownOpen(false);
-    }, 2000); // Close after 5 seconds
+    }, 5000); // Close after 5 seconds
   };
 
   return (
@@ -52,13 +52,14 @@ function Navbar() {
               </Link>
             </li>
             <li className="p-2 hover:underline hover:text-pink-600 underline-offset-2 relative">
-              <Link href="/" className="flex items-center justify-center group">
+              <Link
+                href="/"
+                className="flex items-center justify-center group"
+                onMouseEnter={handleMouseEnter}
+                onMouseLeave={handleMouseLeave}
+              >
                 Pages{' '}
-                <FaChevronDown
-                  onMouseEnter={handleMouseEnter}
-                  onMouseLeave={handleMouseLeave}
-                  className="w-3 h-3 ml-1 opacity-0 group-hover:opacity-100 group-hover:translate-y-1 transition-all duration-200 ease-in-out"
-                />
+                <FaChevronDown className="w-3 h-3 ml-1 opacity-0 group-hover:opacity-100 group-hover:translate-y-1 transition-all duration-200 ease-in-out" />
               </Link>
               {isPagesDropdownOpen && (
                 <ul className="absolute top-full w-[150px] text-start mx-auto mt-2 bg-white shadow-md rounded-md text-black text-sm">
@@ -67,6 +68,12 @@ function Navbar() {
                   </li>
                   <li className="px-4 py-2 hover:bg-gray-100">
                     <Link href="/about">About Us</Link>
+                  </li>
+                  <li className="px-4 py-2 hover:bg-gray-100">
+                    <Link href="/shopGrid">Shop Grid</Link>
+                  </li>
+                  <li className="px-4 py-2 hover:bg-gray-100">
+                    <Link href="/shoplist">Shop List</Link>
                   </li>
                   <li className="px-4 py-2 hover:bg-gray-100">
                     <Link href="/contact-us">Contact Us</Link>

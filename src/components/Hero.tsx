@@ -67,7 +67,7 @@ function HeroSection() {
     <section className="relative lg:h-[80vh] bg-gray-100 py-10 md:py-20 px-5 md:px-20 flex flex-col md:flex-row items-center justify-between overflow-hidden">
       {/* Left Column: Lamp */}
       <div className="md:w-1/4 flex justify-center items-start relative">
-        <div className="absolute top-[-350px] left-[-40px] z-10">
+        <div className="absolute top-[-260px] left-[70px] z-10">
           <Image
             src={current.lampImage}
             alt="Lamp"

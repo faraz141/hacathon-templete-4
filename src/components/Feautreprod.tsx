@@ -86,7 +86,7 @@ function FeaturedProducts() {
               {/* Product Details */}
               <div className="text-center text-[14px] leading-4 my-4">
                 <h3
-                  className="text-[18px] leading-5 font-semibold text-red-500 hover:text-white
+                  className="text-[18px] leading-5 font-semibold text-red-500 group-hover:text-white
                 "
                 >
                   {product.name}
