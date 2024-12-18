@@ -1,20 +1,31 @@
-'use client';
+// 'use client';
 
 import Image from 'next/image';
 // import { HeartIcon, ShoppingCartIcon, MagnifyingGlassIcon } from '@heroicons/react/24/outline';
 import { LuShoppingCart } from 'react-icons/lu';
 import { FaRegHeart } from 'react-icons/fa6';
 import { FaSearchPlus } from 'react-icons/fa';
+import { client } from '@/sanity/lib/client';
 
-function LatestProducts() {
-  const products = [
-    { id: 1, img: '/images/product1.png' },
-    { id: 2, img: '/images/product-2.png' },
-    { id: 3, img: '/images/product3.png' },
-    { id: 4, img: '/images/product4.png' },
-    { id: 5, img: '/images/product5.png' },
-    { id: 6, img: '/images/product6.png' },
-  ];
+export default async function LatestProducts() {
+  // const products = [
+  //   { id: 1, img: '/images/product1.png' },
+  //   { id: 2, img: '/images/product-2.png' },
+  //   { id: 3, img: '/images/product3.png' },
+  //   { id: 4, img: '/images/product4.png' },
+  //   { id: 5, img: '/images/product5.png' },
+  //   { id: 6, img: '/images/product6.png' },
+  // ];
+  const data: {
+    name: string;
+    imgUrl: string;
+    price: string;
+    oldPrice: string;
+  }[] = await client.fetch(
+    '*[_type == "latestProduct"]{name, "imgUrl": img.asset->url, price, oldPrice}',
+    {},
+    { cache: 'no-store' },
+  );
 
   return (
     <div className="w-full bg-white py-20">
@@ -42,9 +53,9 @@ function LatestProducts() {
 
         {/* Product Grid */}
         <div className="w-full md:w-[80%] lg:w-[1177px] max-w-screen-xl mx-auto place-items-center grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-          {products.map((product, index) => (
+          {data.map((product, i) => (
             <div
-              key={product.id}
+              key={i}
               className="w-[360px] h-[306px] bg-white  relative group"
             >
               {/* Product Image */}
@@ -66,7 +77,7 @@ function LatestProducts() {
                   </button>
                 </div>
                 <Image
-                  src={product.img}
+                  src={product.imgUrl}
                   width={235}
                   height={235}
                   alt="Comfy Handy Craft"
@@ -80,13 +91,13 @@ function LatestProducts() {
               <div>
                 <div className="flex flex-row items-center justify-between">
                   <h3 className="text-lg font-semibold text-[#3F509E]">
-                    Comfy Handy Craft
+                    {product.name}
                   </h3>
                   {/* <div className="mt-2 text-gray-600 flex justify-center items-center gap-2"> */}
                   <div>
-                    <span className="text-gray-800 mx-4">$42.00</span>
+                    <span className="text-gray-800 mx-4">{product.price}</span>
                     <span className="text-red-600 font-medium line-through">
-                      $65.00
+                      {product.oldPrice}
                     </span>
                   </div>
 
@@ -102,4 +113,4 @@ function LatestProducts() {
   );
 }
 
-export default LatestProducts;
+// export default LatestProducts;

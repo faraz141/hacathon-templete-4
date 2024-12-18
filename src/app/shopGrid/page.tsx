@@ -4,106 +4,118 @@ import { FaRegHeart } from 'react-icons/fa6';
 import { FaSearchPlus } from 'react-icons/fa';
 import Image from 'next/image';
 import Link from 'next/link';
+import { client } from '@/sanity/lib/client';
 
-const page = () => {
-  const shopList = [
-    {
-      id: 1,
-      name: 'Vel elit euismod',
-      image: '/shop/img1.png',
-      price: '$26.00 ',
-      oldPrice: '$42.00',
-      colors: ['bg-red-500', 'bg-blue-500', 'bg-green-500'],
-    },
-    {
-      id: 2,
-      name: 'Ultricies condimentum imperdiet',
-      image: '/shop/img2.png',
-      price: '$26.00 ',
-      oldPrice: '$42.00',
-      colors: ['bg-[#DE9034]', 'bg-[#EC42A2]', 'bg-[#8568FF]'],
-    },
-    {
-      id: 3,
-      name: 'Vitae suspendisse sed',
-      image: '/shop/img3.png',
-      price: '$26.00 ',
-      oldPrice: '$42.00',
-      colors: ['bg-[#DE9034]', 'bg-[#EC42A2]', 'bg-[#8568FF]'],
-    },
-    {
-      id: 4,
-      name: 'Sed at fermentum',
-      image: '/shop/img4.png',
-      price: '$26.00 ',
-      oldPrice: '$42.00',
-      colors: ['bg-[#DE9034]', 'bg-[#EC42A2]', 'bg-[#8568FF]'],
-    },
-    {
-      id: 5,
-      name: 'Fusce pellentesque at',
-      image: '/shop/img5.png',
-      price: '$26.00 ',
-      oldPrice: '$42.00',
-      colors: ['bg-[#DE9034]', 'bg-[#EC42A2]', 'bg-[#8568FF]'],
-    },
-    {
-      id: 6,
-      name: 'Vestibulum magna laoreet',
-      image: '/shop/img6.png',
-      price: '$26.00 ',
-      oldPrice: '$42.00',
-      colors: ['bg-[#DE9034]', 'bg-[#EC42A2]', 'bg-[#8568FF]'],
-    },
-    {
-      id: 7,
-      name: 'Sollicitudin amet orci',
-      image: '/shop/img7.png',
-      price: '$26.00 ',
-      oldPrice: '$42.00',
-      colors: ['bg-[#DE9034]', 'bg-[#EC42A2]', 'bg-[#8568FF]'],
-    },
-    {
-      id: 8,
-      name: 'Ultrices mauris sit',
-      image: '/shop/img8.png',
-      price: '$26.00 ',
-      oldPrice: '$42.00',
-      colors: ['bg-[#DE9034]', 'bg-[#EC42A2]', 'bg-[#8568FF]'],
-    },
-    {
-      id: 9,
-      name: 'Pellentesque condimentum ac',
-      image: '/shop/img9.png',
-      price: '$26.00 ',
-      oldPrice: '$42.00',
-      colors: ['bg-[#DE9034]', 'bg-[#EC42A2]', 'bg-[#8568FF]'],
-    },
-    {
-      id: 10,
-      name: 'Cras scelerisque velit',
-      image: '/shop/img10.png',
-      price: '$26.00 ',
-      oldPrice: '$42.00',
-      colors: ['bg-[#DE9034]', 'bg-[#EC42A2]', 'bg-[#8568FF]'],
-    },
-    {
-      id: 11,
-      name: 'Cras scelerisque velit',
-      image: '/shop/img11.png',
-      price: '$26.00 ',
-      oldPrice: '$42.00',
-      colors: ['bg-[#DE9034]', 'bg-[#EC42A2]', 'bg-[#8568FF]'],
-    },
-    {
-      id: 12,
-      name: 'Purus risus, ut',
-      image: '/shop/img12.png',
-      price: '$26.00 ',
-      oldPrice: '$42.00',
-      colors: ['bg-[#DE9034]', 'bg-[#EC42A2]', 'bg-[#8568FF]'],
-    },
-  ];
+export default async function page() {
+  const colors = ['bg-red-500', 'bg-blue-500', 'bg-green-500'];
+  const data: {
+    name: string;
+    imgUrl: string;
+    price: string;
+    oldPrice: string;
+  }[] = await client.fetch(
+    '*[_type == "shopGrid"]{name, "imgUrl": img.asset->url, price, oldPrice}',
+    {},
+    { cache: 'no-store' },
+  );
+  // const shopList = [
+  //   {
+  //     id: 1,
+  //     name: 'Vel elit euismod',
+  //     image: '/shop/img1.png',
+  //     price: '$26.00 ',
+  //     oldPrice: '$42.00',
+  //     colors: ['bg-red-500', 'bg-blue-500', 'bg-green-500'],
+  //   },
+  //   {
+  //     id: 2,
+  //     name: 'Ultricies condimentum imperdiet',
+  //     image: '/shop/img2.png',
+  //     price: '$26.00 ',
+  //     oldPrice: '$42.00',
+  //     colors: ['bg-[#DE9034]', 'bg-[#EC42A2]', 'bg-[#8568FF]'],
+  //   },
+  //   {
+  //     id: 3,
+  //     name: 'Vitae suspendisse sed',
+  //     image: '/shop/img3.png',
+  //     price: '$26.00 ',
+  //     oldPrice: '$42.00',
+  //     colors: ['bg-[#DE9034]', 'bg-[#EC42A2]', 'bg-[#8568FF]'],
+  //   },
+  //   {
+  //     id: 4,
+  //     name: 'Sed at fermentum',
+  //     image: '/shop/img4.png',
+  //     price: '$26.00 ',
+  //     oldPrice: '$42.00',
+  //     colors: ['bg-[#DE9034]', 'bg-[#EC42A2]', 'bg-[#8568FF]'],
+  //   },
+  //   {
+  //     id: 5,
+  //     name: 'Fusce pellentesque at',
+  //     image: '/shop/img5.png',
+  //     price: '$26.00 ',
+  //     oldPrice: '$42.00',
+  //     colors: ['bg-[#DE9034]', 'bg-[#EC42A2]', 'bg-[#8568FF]'],
+  //   },
+  //   {
+  //     id: 6,
+  //     name: 'Vestibulum magna laoreet',
+  //     image: '/shop/img6.png',
+  //     price: '$26.00 ',
+  //     oldPrice: '$42.00',
+  //     colors: ['bg-[#DE9034]', 'bg-[#EC42A2]', 'bg-[#8568FF]'],
+  //   },
+  //   {
+  //     id: 7,
+  //     name: 'Sollicitudin amet orci',
+  //     image: '/shop/img7.png',
+  //     price: '$26.00 ',
+  //     oldPrice: '$42.00',
+  //     colors: ['bg-[#DE9034]', 'bg-[#EC42A2]', 'bg-[#8568FF]'],
+  //   },
+  //   {
+  //     id: 8,
+  //     name: 'Ultrices mauris sit',
+  //     image: '/shop/img8.png',
+  //     price: '$26.00 ',
+  //     oldPrice: '$42.00',
+  //     colors: ['bg-[#DE9034]', 'bg-[#EC42A2]', 'bg-[#8568FF]'],
+  //   },
+  //   {
+  //     id: 9,
+  //     name: 'Pellentesque condimentum ac',
+  //     image: '/shop/img9.png',
+  //     price: '$26.00 ',
+  //     oldPrice: '$42.00',
+  //     colors: ['bg-[#DE9034]', 'bg-[#EC42A2]', 'bg-[#8568FF]'],
+  //   },
+  //   {
+  //     id: 10,
+  //     name: 'Cras scelerisque velit',
+  //     image: '/shop/img10.png',
+  //     price: '$26.00 ',
+  //     oldPrice: '$42.00',
+  //     colors: ['bg-[#DE9034]', 'bg-[#EC42A2]', 'bg-[#8568FF]'],
+  //   },
+  //   {
+  //     id: 11,
+  //     name: 'Cras scelerisque velit',
+  //     image: '/shop/img11.png',
+  //     price: '$26.00 ',
+  //     oldPrice: '$42.00',
+  //     colors: ['bg-[#DE9034]', 'bg-[#EC42A2]', 'bg-[#8568FF]'],
+  //   },
+  //   {
+  //     id: 12,
+  //     name: 'Purus risus, ut',
+  //     image: '/shop/img12.png',
+  //     price: '$26.00 ',
+  //     oldPrice: '$42.00',
+  //     colors: ['bg-[#DE9034]', 'bg-[#EC42A2]', 'bg-[#8568FF]'],
+  //   },
+  // ];
   return (
     <div className="w-full  flex flex-col items-center justify-center">
       <div className="py-16  w-full flex items-center justify-center space-y-2 bg-[#f6f5ff]">
@@ -177,9 +189,9 @@ const page = () => {
         </div>
       </div>
       <div className="w-full md:w-[80%] lg:w-[1177px] max-w-screen-xl mx-auto place-items-center grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
-        {shopList.map((product, index) => (
+        {data.map((product, i) => (
           <div
-            key={product.id}
+            key={i}
             className="w-[270px] my-9 h-[363px] bg-white  relative group"
           >
             {/* Product Image */}
@@ -201,7 +213,7 @@ const page = () => {
                 </button>
               </div>
               <Image
-                src={product.image}
+                src={product.imgUrl}
                 width={160}
                 height={160}
                 alt="Comfy Handy Craft"
@@ -214,11 +226,11 @@ const page = () => {
             </div>
             <div>
               <div className="flex flex-col items-center justify-between">
-                <h3 className="text-[16px] leading-[18px] my-1 font-semibold text-[#3F509E]">
+                <h3 className="text-[16px] leading-[18px] my-1 mt-4 font-semibold text-[#3F509E]">
                   {product.name}
                 </h3>
                 <div className="my-1 flex gap-1">
-                  {product.colors.map((color, index) => (
+                  {colors.map((color, index) => (
                     <span
                       key={index}
                       className={`w-3 h-3 ${color} rounded-full`}
@@ -227,9 +239,9 @@ const page = () => {
                 </div>
                 {/* <div className="mt-2 text-gray-600 flex justify-center items-center gap-2"> */}
                 <div className="my-1">
-                  <span className="text-gray-800 mx-4">$42.00</span>
+                  <span className="text-gray-800 mx-4">{product.price}</span>
                   <span className="text-red-600 font-medium line-through">
-                    $65.00
+                    {product.oldPrice}
                   </span>
                 </div>
 
@@ -242,6 +254,6 @@ const page = () => {
       </div>
     </div>
   );
-};
+}
 
-export default page;
+// export default page;

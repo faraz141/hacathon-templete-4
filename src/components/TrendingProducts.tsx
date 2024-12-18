@@ -1,12 +1,17 @@
+import { client } from '@/sanity/lib/client';
 import Image from 'next/image';
 
-function TrendingProducts() {
-  const products = [
-    { id: 1, img: '/images/chair5.png' },
-    { id: 2, img: '/images/chair6.png' },
-    { id: 3, img: '/images/chair7.png' },
-    { id: 4, img: '/images/product5.png' },
-  ];
+export default async function TrendingProducts() {
+  const data: {
+    name: string;
+    imgUrl: string;
+    price: string;
+    oldPrice: string;
+  }[] = await client.fetch(
+    '*[_type == "trandingProduct"]{name, "imgUrl": img.asset->url, price, oldPrice}',
+    {},
+    { cache: 'no-store' },
+  );
 
   const exclusiveProducts = [
     { id: 1, img: '/images/chair8.png' },
@@ -24,15 +29,15 @@ function TrendingProducts() {
 
         {/* Product Grid */}
         <div className="w-full max-w-screen-xl mx-auto grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 place-items-center gap-12 mb-20">
-          {products.map((product) => (
+          {data.map((product, i) => (
             <div
-              key={product.id}
+              key={i}
               className="group relative shadow-custom w-[270px] h-[350px] flex items-center justify-center flex-col"
             >
               {/* Image with Gray Background */}
               <div className="bg-gray-200 flex justify-center items-center p-6 h-[244px] w-[247px] relative">
                 <Image
-                  src={product.img}
+                  src={product.imgUrl}
                   alt="Trending Product"
                   width={200}
                   height={200}
@@ -43,10 +48,14 @@ function TrendingProducts() {
               {/* Product Details */}
               <div className="mt-4 text-center">
                 <h3 className="text-[#3F509E] font-semibold text-lg mb-2">
-                  Cantilever Chair
+                  {product.name}
                 </h3>
-                <p className="text-[#3F509E] font-bold inline-block">$26.00</p>
-                <span className="text-gray-500 line-through ml-2">$42.00</span>
+                <p className="text-[#3F509E] font-bold inline-block">
+                  {product.price}
+                </p>
+                <span className="text-gray-500 line-through ml-2">
+                  {product.oldPrice}
+                </span>
               </div>
             </div>
           ))}
@@ -125,4 +134,4 @@ function TrendingProducts() {
   );
 }
 
-export default TrendingProducts;
+// export default TrendingProducts;
