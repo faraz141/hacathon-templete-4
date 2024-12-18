@@ -16,6 +16,8 @@ export default function TrendingProducts() {
       try {
         const data: Product[] = await client.fetch(
           '*[_type == "trandingProduct"]{name, "imgUrl": img.asset->url, price, oldPrice}',
+          {},
+          { cache: 'no-store' },
         );
         setProducts(data);
       } catch (error) {

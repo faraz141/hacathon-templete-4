@@ -22,6 +22,8 @@ export default function ProductsLatest() {
       try {
         const data: Product[] = await client.fetch(
           '*[_type == "latestProduct"]{name, "imgUrl": img.asset->url, price, oldPrice}',
+          {},
+          { cache: 'no-store' },
         );
         setProducts(data);
       } catch (error) {
