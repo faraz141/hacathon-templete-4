@@ -1,42 +1,47 @@
-// 'use client';
+'use client';
 
+import { useEffect, useState } from 'react';
 import Image from 'next/image';
-// import { HeartIcon, ShoppingCartIcon, MagnifyingGlassIcon } from '@heroicons/react/24/outline';
 import { LuShoppingCart } from 'react-icons/lu';
-import { FaRegHeart } from 'react-icons/fa6';
-import { FaSearchPlus } from 'react-icons/fa';
+import { FaRegHeart, FaSearchPlus } from 'react-icons/fa';
 import { client } from '@/sanity/lib/client';
 
-export default async function LatestProducts() {
-  // const products = [
-  //   { id: 1, img: '/images/product1.png' },
-  //   { id: 2, img: '/images/product-2.png' },
-  //   { id: 3, img: '/images/product3.png' },
-  //   { id: 4, img: '/images/product4.png' },
-  //   { id: 5, img: '/images/product5.png' },
-  //   { id: 6, img: '/images/product6.png' },
-  // ];
-  const data: {
-    name: string;
-    imgUrl: string;
-    price: string;
-    oldPrice: string;
-  }[] = await client.fetch(
-    '*[_type == "latestProduct"]{name, "imgUrl": img.asset->url, price, oldPrice}',
-    {},
-    { cache: 'no-store' },
-  );
+// Define the product type
+interface Product {
+  name: string;
+  imgUrl: string;
+  price: string;
+  oldPrice: string;
+}
+
+export default function ProductsLatest() {
+  const [products, setProducts] = useState<Product[]>([]); // Specify state type as an array of Product
+
+  useEffect(() => {
+    async function fetchProducts() {
+      try {
+        const data: Product[] = await client.fetch(
+          '*[_type == "latestProduct"]{name, "imgUrl": img.asset->url, price, oldPrice}',
+        );
+        setProducts(data);
+      } catch (error) {
+        console.error('Failed to fetch products:', error);
+      }
+    }
+
+    fetchProducts();
+  }, []);
 
   return (
     <div className="w-full bg-white py-20">
       {/* Heading */}
-      <div className="w-">
+      <div>
         <h2 className="text-[#3F509E] text-4xl text-center font-bold mb-8">
           Latest Products
         </h2>
 
         {/* Tabs */}
-        <div className="  flex justify-center space-x-2  md:space-x-8  mb-16">
+        <div className="flex justify-center space-x-2 md:space-x-8 mb-16">
           {['New Arrival', 'Best Seller', 'Featured', 'Special Offers'].map(
             (tab) => (
               <button
@@ -53,15 +58,14 @@ export default async function LatestProducts() {
 
         {/* Product Grid */}
         <div className="w-full md:w-[80%] lg:w-[1177px] max-w-screen-xl mx-auto place-items-center grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-          {data.map((product, i) => (
+          {products.map((product, i) => (
             <div
               key={i}
-              className="w-[360px] h-[306px] bg-white  relative group"
+              className="w-[360px] h-[306px] bg-white relative group"
             >
               {/* Product Image */}
-              <div className="w-[360px]  h-[270px] bg-[#f7f7f7] flex flex-col justify-center items-center relative overflow-hidden transition-all duration-300 group-hover:bg-white">
+              <div className="w-[360px] h-[270px] bg-[#f7f7f7] flex flex-col justify-center items-center relative overflow-hidden transition-all duration-300 group-hover:bg-white">
                 {/* Sale Tag */}
-
                 <span className="opacity-0 group-hover:opacity-100 absolute top-4 left-4 bg-[#3F509E] text-white text-sm px-3 py-1 -rotate-[30deg] rounded">
                   Sale
                 </span>
@@ -80,28 +84,21 @@ export default async function LatestProducts() {
                   src={product.imgUrl}
                   width={235}
                   height={235}
-                  alt="Comfy Handy Craft"
-                  className="object-contain "
+                  alt={product.name}
+                  className="object-contain"
                 />
-
-                {/* Icons */}
-
-                {/* Product Details */}
               </div>
               <div>
                 <div className="flex flex-row items-center justify-between">
                   <h3 className="text-lg font-semibold text-[#3F509E]">
                     {product.name}
                   </h3>
-                  {/* <div className="mt-2 text-gray-600 flex justify-center items-center gap-2"> */}
                   <div>
                     <span className="text-gray-800 mx-4">{product.price}</span>
                     <span className="text-red-600 font-medium line-through">
                       {product.oldPrice}
                     </span>
                   </div>
-
-                  {/* </div> */}
                 </div>
                 <div className="w-[153.73px] top-[305.04px] border-2 border-[#eeeffb] flex items-start justify-start rotate-[-0.36deg]"></div>
               </div>
@@ -112,5 +109,3 @@ export default async function LatestProducts() {
     </div>
   );
 }
-
-// export default LatestProducts;

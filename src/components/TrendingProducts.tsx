@@ -1,17 +1,30 @@
+'use client';
 import { client } from '@/sanity/lib/client';
 import Image from 'next/image';
+import { useEffect, useState } from 'react';
+interface Product {
+  name: string;
+  imgUrl: string;
+  price: string;
+  oldPrice: string;
+}
+export default function TrendingProducts() {
+  const [products, setProducts] = useState<Product[]>([]); // Specify state type as an array of Product
 
-export default async function TrendingProducts() {
-  const data: {
-    name: string;
-    imgUrl: string;
-    price: string;
-    oldPrice: string;
-  }[] = await client.fetch(
-    '*[_type == "trandingProduct"]{name, "imgUrl": img.asset->url, price, oldPrice}',
-    {},
-    { cache: 'no-store' },
-  );
+  useEffect(() => {
+    async function fetchProducts() {
+      try {
+        const data: Product[] = await client.fetch(
+          '*[_type == "trandingProduct"]{name, "imgUrl": img.asset->url, price, oldPrice}',
+        );
+        setProducts(data);
+      } catch (error) {
+        console.error('Failed to fetch products:', error);
+      }
+    }
+
+    fetchProducts();
+  }, []);
 
   const exclusiveProducts = [
     { id: 1, img: '/images/chair8.png' },
@@ -29,7 +42,7 @@ export default async function TrendingProducts() {
 
         {/* Product Grid */}
         <div className="w-full max-w-screen-xl mx-auto grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 place-items-center gap-12 mb-20">
-          {data.map((product, i) => (
+          {products.map((product, i) => (
             <div
               key={i}
               className="group relative shadow-custom w-[270px] h-[350px] flex items-center justify-center flex-col"

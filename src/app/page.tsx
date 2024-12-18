@@ -2,7 +2,8 @@ import BlogSection from '@/components/BlogSection';
 import Discount from '@/components/Discount';
 import FeaturedProducts from '@/components/Feautreprod';
 import Hero from '@/components/Hero';
-import LatestProducts from '@/components/LatestProducts';
+import ProductsLatest from '@/components/LatestProducts';
+
 import Newslater from '@/components/Newslater';
 import Offer from '@/components/Offers';
 import ShopList from '@/components/shopList';
@@ -17,7 +18,7 @@ export default function Home() {
       {/* <ShopList /> */}
       <Hero />
       <FeaturedProducts />
-      <LatestProducts />
+      <ProductsLatest />
       <Offer />
       <Unique />
       <TrendingProducts />
