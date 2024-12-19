@@ -7,7 +7,7 @@ import { FaRegHeart, FaSearchPlus } from 'react-icons/fa';
 import { client } from '@/sanity/lib/client';
 
 // Define the product type
-interface Product {
+interface Products {
   name: string;
   imgUrl: string;
   price: string;
@@ -15,12 +15,12 @@ interface Product {
 }
 
 export default function ProductsLatest() {
-  const [products, setProducts] = useState<Product[]>([]); // Specify state type as an array of Product
+  const [products, setProducts] = useState<Products[]>([]); // Specify state type as an array of Product
 
   useEffect(() => {
     async function fetchProducts() {
       try {
-        const data: Product[] = await client.fetch(
+        const data: Products[] = await client.fetch(
           '*[_type == "latestProduct"]{name, "imgUrl": img.asset->url, price, oldPrice}',
           {},
           { cache: 'no-store' },
