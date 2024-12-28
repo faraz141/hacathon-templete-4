@@ -1,9 +1,11 @@
 'use client';
 import { client } from '@/sanity/lib/client';
 import Image from 'next/image';
+import Link from 'next/link';
 import { useEffect, useState } from 'react';
 interface Product {
   name: string;
+  id: string;
   imgUrl: string;
   price: string;
   oldPrice: string;
@@ -15,7 +17,7 @@ export default function TrendingProducts() {
     async function fetchProducts() {
       try {
         const data: Product[] = await client.fetch(
-          '*[_type == "trandingProduct"]{name, "imgUrl": img.asset->url, price, oldPrice}',
+          '*[_type == "trandingProduct"]{id, name, "imgUrl": img.asset->url, price, oldPrice}',
           {},
           { cache: 'no-store' },
         );
@@ -44,36 +46,39 @@ export default function TrendingProducts() {
 
         {/* Product Grid */}
         <div className="w-full max-w-screen-xl mx-auto grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 place-items-center gap-12 mb-20">
-          {products.map((product, i) => (
-            <div
-              key={i}
-              className="group relative shadow-custom w-[270px] h-[350px] flex items-center justify-center flex-col"
-            >
-              {/* Image with Gray Background */}
-              <div className="bg-gray-200 flex justify-center items-center p-6 h-[244px] w-[247px] relative">
-                <Image
-                  src={product.imgUrl}
-                  alt="Trending Product"
-                  width={200}
-                  height={200}
-                  className="object-contain transition-all duration-300 group-hover:opacity-90"
-                />
-              </div>
+          {products.map((product) => {
+            return (
+              <Link
+                key={product.id}
+                href={`/TrendingProduct/${product.id}`}
+                className="group relative shadow-custom w-[270px] h-[350px] flex items-center justify-center flex-col"
+              >
+                {/* Image with Gray Background */}
+                <div className="bg-gray-200 flex justify-center items-center p-6 h-[244px] w-[247px] relative">
+                  <Image
+                    src={product.imgUrl}
+                    alt="Trending Product"
+                    width={200}
+                    height={200}
+                    className="object-contain transition-all duration-300 group-hover:opacity-90"
+                  />
+                </div>
 
-              {/* Product Details */}
-              <div className="mt-4 text-center">
-                <h3 className="text-[#3F509E] font-semibold text-lg mb-2">
-                  {product.name}
-                </h3>
-                <p className="text-[#3F509E] font-bold inline-block">
-                  {product.price}
-                </p>
-                <span className="text-gray-500 line-through ml-2">
-                  {product.oldPrice}
-                </span>
-              </div>
-            </div>
-          ))}
+                {/* Product Details */}
+                <div className="mt-4 text-center">
+                  <h3 className="text-[#3F509E] font-semibold text-lg mb-2">
+                    {product.name}
+                  </h3>
+                  <p className="text-[#3F509E] font-bold inline-block">
+                    {product.price}
+                  </p>
+                  <span className="text-gray-500 line-through ml-2">
+                    {product.oldPrice}
+                  </span>
+                </div>
+              </Link>
+            );
+          })}
         </div>
 
         {/* Vouchers and Product List Section */}

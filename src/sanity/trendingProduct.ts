@@ -5,6 +5,11 @@ const TrandingProduct = {
   type: 'document', // Defines it as a document type
   fields: [
     {
+      name: 'id',
+      title: 'Product ID',
+      type: 'string',
+    },
+    {
       name: 'name',
       title: 'Product Name',
       type: 'string',

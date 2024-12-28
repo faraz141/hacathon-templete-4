@@ -9,12 +9,13 @@ import { client } from '@/sanity/lib/client';
 export default async function page() {
   const colors = ['bg-red-500', 'bg-blue-500', 'bg-green-500'];
   const data: {
+    id: string;
     name: string;
     imgUrl: string;
     price: string;
     oldPrice: string;
   }[] = await client.fetch(
-    '*[_type == "shopGrid"]{name, "imgUrl": img.asset->url, price, oldPrice}',
+    '*[_type == "shopGrid"]{id, name, "imgUrl": img.asset->url, price, oldPrice}',
     {},
     { cache: 'no-store' },
   );
@@ -189,68 +190,71 @@ export default async function page() {
         </div>
       </div>
       <div className="w-full md:w-[80%] lg:w-[1177px] max-w-screen-xl mx-auto place-items-center grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
-        {data.map((product, i) => (
-          <div
-            key={i}
-            className="w-[270px] my-9 h-[363px] bg-white  relative group"
-          >
-            {/* Product Image */}
-            <div className="w-[270px] h-[280px] bg-[#f7f7f7] flex flex-col justify-center items-center relative overflow-hidden transition-all duration-300 group-hover:bg-[#ebf4f3]">
-              {/* Sale Tag */}
+        {data.map((product) => {
+          return (
+            <Link
+              key={product.id}
+              href={`/shopGrid/${product.id}`}
+              className="w-[270px] my-9 h-[363px] bg-white  relative group"
+            >
+              {/* Product Image */}
+              <div className="w-[270px] h-[280px] bg-[#f7f7f7] flex flex-col justify-center items-center relative overflow-hidden transition-all duration-300 group-hover:bg-[#ebf4f3]">
+                {/* Sale Tag */}
 
-              {/* <span className="opacity-0 group-hover:opacity-100 absolute top-4 left-4 bg-[#3F509E] text-white text-sm px-3 py-1 -rotate-[30deg] rounded">
+                {/* <span className="opacity-0 group-hover:opacity-100 absolute top-4 left-4 bg-[#3F509E] text-white text-sm px-3 py-1 -rotate-[30deg] rounded">
                 Sale
               </span> */}
-              <div className="absolute bottom-6 flex items-center justify-center flex-col left-4 space-y-2 opacity-0 group-hover:opacity-100 transition-opacity duration-300">
-                <button className="bg-white p-2 rounded-full shadow ">
-                  <LuShoppingCart className="w-6 h-6 text-[#3F509E]" />
-                </button>
-                <button className="bg-transparent p-2 ">
-                  <FaRegHeart className="w-4 h-4 text-[#3F509E]" />
-                </button>
-                <button className="bg-transparent p-2 ">
-                  <FaSearchPlus className="w-4 h-4 text-[#3F509E]" />
-                </button>
-              </div>
-              <Image
-                src={product.imgUrl}
-                width={160}
-                height={160}
-                alt="Comfy Handy Craft"
-                className="object-contain "
-              />
-
-              {/* Icons */}
-
-              {/* Product Details */}
-            </div>
-            <div>
-              <div className="flex flex-col items-center justify-between">
-                <h3 className="text-[16px] leading-[18px] my-1 mt-4 font-semibold text-[#3F509E]">
-                  {product.name}
-                </h3>
-                <div className="my-1 flex gap-1">
-                  {colors.map((color, index) => (
-                    <span
-                      key={index}
-                      className={`w-3 h-3 ${color} rounded-full`}
-                    ></span>
-                  ))}
+                <div className="absolute bottom-6 flex items-center justify-center flex-col left-4 space-y-2 opacity-0 group-hover:opacity-100 transition-opacity duration-300">
+                  <button className="bg-white p-2 rounded-full shadow ">
+                    <LuShoppingCart className="w-6 h-6 text-[#3F509E]" />
+                  </button>
+                  <button className="bg-transparent p-2 ">
+                    <FaRegHeart className="w-4 h-4 text-[#3F509E]" />
+                  </button>
+                  <button className="bg-transparent p-2 ">
+                    <FaSearchPlus className="w-4 h-4 text-[#3F509E]" />
+                  </button>
                 </div>
-                {/* <div className="mt-2 text-gray-600 flex justify-center items-center gap-2"> */}
-                <div className="my-1">
-                  <span className="text-gray-800 mx-4">{product.price}</span>
-                  <span className="text-red-600 font-medium line-through">
-                    {product.oldPrice}
-                  </span>
-                </div>
+                <Image
+                  src={product.imgUrl}
+                  width={160}
+                  height={160}
+                  alt="Comfy Handy Craft"
+                  className="object-contain "
+                />
 
-                {/* </div> */}
+                {/* Icons */}
+
+                {/* Product Details */}
               </div>
-              {/* <div className="w-[153.73px] top-[305.04px] border-2 border-[#eeeffb] flex items-start justify-start rotate-[-0.36deg]"></div> */}
-            </div>
-          </div>
-        ))}
+              <div>
+                <div className="flex flex-col items-center justify-between">
+                  <h3 className="text-[16px] leading-[18px] my-1 mt-4 font-semibold text-[#3F509E]">
+                    {product.name}
+                  </h3>
+                  <div className="my-1 flex gap-1">
+                    {colors.map((color, index) => (
+                      <span
+                        key={index}
+                        className={`w-3 h-3 ${color} rounded-full`}
+                      ></span>
+                    ))}
+                  </div>
+                  {/* <div className="mt-2 text-gray-600 flex justify-center items-center gap-2"> */}
+                  <div className="my-1">
+                    <span className="text-gray-800 mx-4">{product.price}</span>
+                    <span className="text-red-600 font-medium line-through">
+                      {product.oldPrice}
+                    </span>
+                  </div>
+
+                  {/* </div> */}
+                </div>
+                {/* <div className="w-[153.73px] top-[305.04px] border-2 border-[#eeeffb] flex items-start justify-start rotate-[-0.36deg]"></div> */}
+              </div>
+            </Link>
+          );
+        })}
       </div>
     </div>
   );
