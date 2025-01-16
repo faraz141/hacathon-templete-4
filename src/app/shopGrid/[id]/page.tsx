@@ -1,3 +1,4 @@
+'use client';
 import Image from 'next/image';
 import { client } from '@/sanity/lib/client';
 import {
@@ -10,6 +11,8 @@ import {
 import Link from 'next/link';
 import { LuShoppingCart } from 'react-icons/lu';
 import TabbedContent from '@/components/productDetailText';
+import { useCart } from '@/components/cartContext';
+import { useEffect, useState } from 'react';
 
 interface Product {
   name: string;
@@ -19,30 +22,68 @@ interface Product {
   id: string;
 }
 
-export default async function Page({ params }: { params: { id: string } }) {
+export default function Page({ params }: { params: { id: string } }) {
   const { id } = params;
 
-  // Fetch product data based on the ID
-  const product: Product = await client.fetch(
-    `*[_type == "shopGrid" && id == $id]{id, name, "imgUrl": img.asset->url, price, oldPrice}[0]`,
-    { id },
-  );
+  const [relatedProducts, setRelatedProducts] = useState<Product[]>([]);
+
+  const [product, setProduct] = useState<Product | null>(null);
+  const { addToCart } = useCart();
+
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState<string | null>(null);
+
+  useEffect(() => {
+    const fetchProduct = async () => {
+      try {
+        const fetchedProduct: Product = await client.fetch(
+          `*[_type == "shopGrid" && id == $id]{id, name, "imgUrl": img.asset->url, price, oldPrice}[0]`,
+          { id },
+        );
+
+        if (!fetchedProduct) {
+          setError('Product not found');
+        } else {
+          setProduct(fetchedProduct);
+        }
+      } catch (err) {
+        setError('Failed to fetch product');
+      } finally {
+        setLoading(false);
+      }
+    };
+    const fetchRelatedProducts = async () => {
+      try {
+        const fetchedRelatedProducts: Product[] = await client.fetch(
+          '*[_type == "shopGrid"]{id, name, "imgUrl": img.asset->url, price, oldPrice}',
+          {},
+          { cache: 'no-store' },
+        );
+
+        setRelatedProducts(fetchedRelatedProducts);
+      } catch (err) {
+        setError('Failed to fetch related products');
+      }
+    };
+    fetchRelatedProducts();
+
+    fetchProduct();
+  }, [id]);
+
+  if (loading) {
+    return <div>Loading...</div>;
+  }
+
+  if (error) {
+    return <div>{error}</div>;
+  }
 
   if (!product) {
     return <div>Product not found</div>;
   }
+
   const colors = ['bg-red-500', 'bg-blue-500', 'bg-green-500'];
-  const data: {
-    id: string;
-    name: string;
-    imgUrl: string;
-    price: string;
-    oldPrice: string;
-  }[] = await client.fetch(
-    '*[_type == "shopGrid"]{id, name, "imgUrl": img.asset->url, price, oldPrice}',
-    {},
-    { cache: 'no-store' },
-  );
+  // const { addToCart } = useCart();
 
   return (
     <div className="w-full flex flex-col items-center justify-center overflow-hidden">
@@ -143,7 +184,11 @@ export default async function Page({ params }: { params: { id: string } }) {
           </p>
           <div className="flex items-center my-2 pl-20">
             <h4 className="text-[#151875] font-bold text-lg">Add To Cart</h4>
-            <button className="bg-white pl-6 ">
+
+            <button
+              className="bg-white pl-6 "
+              onClick={() => addToCart(product)}
+            >
               <FaRegHeart className="w-4 h-4 text-[#151875]" />
             </button>
           </div>
@@ -183,7 +228,7 @@ export default async function Page({ params }: { params: { id: string } }) {
         Related Product
       </h2>
       <div className="w-full md:w-[80%] lg:w-[1177px] place-items-center grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 md:gap-8 overflow-hidden">
-        {data.map((product) => {
+        {relatedProducts.map((product) => {
           return (
             <Link
               key={product.id}
