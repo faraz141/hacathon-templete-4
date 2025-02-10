@@ -1,3 +1,4 @@
+'use client';
 import Image from 'next/image';
 import { client } from '@/sanity/lib/client';
 import {
@@ -10,43 +11,126 @@ import {
 import Link from 'next/link';
 import { LuShoppingCart } from 'react-icons/lu';
 import TabbedContent from '@/components/productDetailText';
+import { useContext, useEffect, useState } from 'react';
+import CartContext from '@/context/CartContext';
+import { ClipLoader } from 'react-spinners';
+import { FiAlertTriangle } from 'react-icons/fi';
 
 interface Product {
   name: string;
   imgUrl: string;
-  price: string;
-  oldPrice: string;
+  price: number;
+  oldPrice: number;
   id: string;
   code: string;
+  description: string;
 }
 
-export default async function Page({ params }: { params: { id: string } }) {
+export default function Page({ params }: { params: { id: string } }) {
   const { id } = params;
 
   // Fetch product data based on the ID
-  const product: Product = await client.fetch(
-    `*[_type == "featuredProduct" && id == $id]{id, code, name, "imgUrl": img.asset->url, price, oldPrice}[0]`,
-    { id },
-  );
+  const [relatedProducts, setRelatedProducts] = useState<Product[]>([]);
+
+  const [product, setProduct] = useState<Product | null>(null);
+
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState<string | null>(null);
+  const [showSuccessMessage, setShowSuccessMessage] = useState(false); // State to control alert visibility
+
+  const { addItemToCart } = useContext(CartContext);
+
+  useEffect(() => {
+    const fetchProduct = async () => {
+      try {
+        const res = await fetch(`/api/product/featured/${id}`);
+        if (!res.ok) {
+          throw new Error(await res.text());
+        }
+        const fetchedProduct: Product = await res.json();
+        setProduct(fetchedProduct);
+      } catch (err) {
+        console.error('Error fetching product:', err);
+        setError('Unable to load product details. Please try again later.');
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    const fetchRelatedProducts = async () => {
+      try {
+        const res = await fetch('/api/product/shopGrid');
+        if (!res.ok) {
+          throw new Error(await res.text());
+        }
+        const fetchedRelatedProducts: Product[] = await res.json();
+        setRelatedProducts(fetchedRelatedProducts);
+      } catch (err) {
+        console.error('Error fetching product:', err);
+        setError('Unable to load product details. Please try again later.');
+      }
+    };
+
+    fetchProduct();
+    fetchRelatedProducts();
+  }, [id]);
+  const addToCartHandler = () => {
+    if (product) {
+      addItemToCart({
+        product: product.id,
+        name: product.name,
+        price: product.price,
+        image: product.imgUrl,
+        stock: 50, // Assuming stock is 1 for simplicity
+        Category: 'featured Product', // Replace with actual seller information if available
+        Quantity: 1,
+      });
+      setShowSuccessMessage(true); //Show success message
+      setTimeout(() => setShowSuccessMessage(false), 3000); // Hide after 3 seconds
+    }
+  };
+
+  if (loading) {
+    return (
+      <div
+        style={{
+          display: 'flex',
+          justifyContent: 'center',
+          alignItems: 'center',
+          height: '100vh',
+        }}
+      >
+        <ClipLoader size={50} color="#7E33E0" />
+      </div>
+    );
+  }
+
+  if (error) {
+    return <div>{error}</div>;
+  }
 
   if (!product) {
     return <div>Product not found</div>;
   }
-  const colors = ['bg-red-500', 'bg-blue-500', 'bg-green-500'];
-  const data: {
-    id: string;
-    name: string;
-    imgUrl: string;
-    price: string;
-    oldPrice: string;
-  }[] = await client.fetch(
-    '*[_type == "shopGrid"]{id, name, "imgUrl": img.asset->url, price, oldPrice}',
-    {},
-    { cache: 'no-store' },
-  );
 
+  const colors = ['bg-red-500', 'bg-blue-500', 'bg-green-500'];
+  // const data: {
+  //   id: string;
   return (
     <div className="w-full flex flex-col items-center justify-center overflow-hidden">
+      {showSuccessMessage && (
+        <div className="fixed top-[50%] left-[50%] transform -translate-x-1/2 -translate-y-1/2 w-[300px] flex justify-center items-center z-50">
+          <div className="bg-[#0D134E] text-[#FB2E86] p-4 rounded shadow-lg w-full text-center">
+            <h2 className="text-[#FB2E86] flex items-center justify-center">
+              <span>
+                <FiAlertTriangle className="text-[#FB2E86]" />
+              </span>
+              Alert!
+            </h2>
+            <p> Added to cart successfully!</p>
+          </div>
+        </div>
+      )}
       <div className="py-16  w-full flex items-center justify-center space-y-2 bg-[#f6f5ff]">
         <div className="w-[80%]   lg:w-[1177px]">
           <h1 className="text-4xl my-2 font-bold text-[#001F54]">
@@ -138,21 +222,33 @@ export default async function Page({ params }: { params: { id: string } }) {
             </div>
           </div>
           <p className="text-[#a9acc6] text-lg font-normal font-sans pl-4 my-2">
-            Lorem ipsum dolor sit amet, consectetur adipiscing elit. Magna in
-            est <br />
-            adipiscing in phasellus non in justo.
+            {product.description
+              ? product.description
+              : 'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Magna in est adipiscing in phasellus non in justo.'}
           </p>
-          <div className="flex items-center my-2 pl-20">
-            <h4 className="text-[#151875] font-bold text-lg">Add To Cart</h4>
-            <button className="bg-white pl-6 ">
-              <FaRegHeart className="w-4 h-4 text-[#151875]" />
+
+          <div className="flex items-center hover:bg-[#FB2E86] my-2 ml-20 p-2 rounded-2xl">
+            <button
+              onClick={addToCartHandler}
+              className=" flex items-center justify-center "
+            >
+              <h4 className="text-[#151875] font-bold text-lg">Add To Cart</h4>
+              <button className="bg-transparent pl-6 ">
+                <FaRegHeart className="w-4 h-4 text-[#151875] group-hover:opacity-100" />
+              </button>
             </button>
           </div>
           <h4 className="text-[#0d134e] font-bold text-lg pl-4 my-2">
-            Categogies:
+            Categogies:{' '}
+            <span className="text-[#FB2E86] font-normal mx-5 text-lg">
+              featured Product
+            </span>
           </h4>
           <h4 className="text-[#0d134e] font-bold text-lg pl-4 my-2">
-            Tags: {product.code}
+            Tags:
+            <span className="text-[#FB2E86] font-normal mx-5 text-lg">
+              Stylish Chairs
+            </span>
           </h4>
           <div className="flex items-center my-2 pl-4">
             <h4 className="text-[#0d134e] font-bold text-lg">Share</h4>
@@ -186,7 +282,7 @@ export default async function Page({ params }: { params: { id: string } }) {
         Related Product
       </h2>
       <div className="w-full md:w-[80%] lg:w-[1177px] place-items-center grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 md:gap-8 overflow-hidden">
-        {data.map((product) => {
+        {relatedProducts.map((product) => {
           return (
             <Link
               key={product.id}

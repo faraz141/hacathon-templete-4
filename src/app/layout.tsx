@@ -7,6 +7,7 @@ import Navbar from '@/components/Navbar';
 import Footer from '@/components/Footer';
 import Logo from '@/components/sponsor-logo';
 import { CartProvider } from '@/components/cartContext';
+import { GlobalProvider } from './globalProvider';
 
 const inter = Inter({ subsets: ['latin'] });
 
@@ -29,13 +30,15 @@ export default function RootLayout({
         />
       </head>
       <body className={inter.className}>
-        <CartProvider>
+        {/* <CartProvider> */}
+        <GlobalProvider>
           <Header />
           <Navbar />
           {children}
           <Logo />
           <Footer />
-        </CartProvider>
+        </GlobalProvider>
+        {/* </CartProvider> */}
       </body>
     </html>
   );

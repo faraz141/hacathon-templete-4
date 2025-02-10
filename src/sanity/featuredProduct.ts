@@ -1,5 +1,6 @@
 import { Rule } from '@sanity/types';
 import { SanityDocument } from '@sanity/client';
+import { title } from 'process';
 // import sanityClient from 'part:@sanity/base/client'; // Import the Sanity client
 
 const featuredProduct = {
@@ -12,6 +13,14 @@ const featuredProduct = {
       title: 'Product ID',
       type: 'string',
     },
+    // {
+    //   name: 'slug',
+    //   title: 'Slug',
+    //   type: 'slug',
+    //   options: {
+    //     source: 'id',
+    //   },
+    // },
     { name: 'code', title: 'Product Code', type: 'string' },
 
     //   description: 'Unique identifier for this product',
@@ -55,12 +64,12 @@ const featuredProduct = {
     {
       name: 'price',
       title: 'Price',
-      type: 'string',
+      type: 'number',
     },
     {
       name: 'oldPrice',
       title: 'oldPrice',
-      type: 'string',
+      type: 'number',
     },
     {
       name: 'description',

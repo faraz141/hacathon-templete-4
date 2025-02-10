@@ -8,33 +8,53 @@ import { FaSearchPlus } from 'react-icons/fa';
 import { useEffect, useState } from 'react';
 import { client } from '@/sanity/lib/client';
 import Link from 'next/link';
+import { ClipLoader } from 'react-spinners';
 interface Products {
   name: string;
   imgUrl: string;
-  price: string;
-  oldPrice: string;
+  price: number;
+  oldPrice: number;
   id: string;
   code: string;
 }
 
 export default function FeaturedProducts() {
   const [products, setProducts] = useState<Products[]>([]);
+  const [loading, setLoading] = useState(true);
+  // Specify state type as an array of Product
+
   useEffect(() => {
     async function fetchProducts() {
       try {
-        const data: Products[] = await client.fetch(
-          '*[_type == "featuredProduct"]{id, name, code, "imgUrl": img.asset->url, price, oldPrice}',
-          {},
-          { cache: 'no-store' },
-        );
-        setProducts(data);
+        const response = await fetch('/api/product/featured'); // Call the API route
+        if (!response.ok) {
+          throw new Error('Failed to fetch products');
+        }
+        const data: Products[] = await response.json();
+        setProducts(data); // Update state with fetched products
       } catch (error) {
-        console.error('Failed to fetch products:', error);
+        console.error('Error fetching products:', error);
+      } finally {
+        setLoading(false);
       }
     }
 
     fetchProducts();
   }, []);
+  if (loading) {
+    return (
+      <div
+        style={{
+          display: 'flex',
+          justifyContent: 'center',
+          alignItems: 'center',
+          height: '100vh',
+        }}
+      >
+        <ClipLoader size={50} color="#FB2E86" />
+      </div>
+    );
+  }
 
   return (
     <div className="w-full md:w-[80%] lg:w-[1177px] mx-auto bg-white py-20">

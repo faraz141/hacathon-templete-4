@@ -1,18 +1,20 @@
-// context/CartContext.tsx
 'use client';
 import React, { createContext, useContext, useState, ReactNode } from 'react';
 
-interface Product {
-  id: string; // Ensure this matches the type returned from your data source
+// Define the structure for cart items
+interface CartItem {
+  id: string;
   name: string;
   imgUrl: string;
-  price: string;
-  oldPrice: string;
+  price: number;
+  oldPrice: number;
+  quantity: number; // Add quantity to track how many items are in the cart
 }
 
 interface CartContextType {
-  cart: Product[];
-  addToCart: (product: Product) => void;
+  cart: CartItem[];
+  addItemToCart: (product: Omit<CartItem, 'quantity'>) => void; // Accepts product without quantity
+  deleteItemFromCart: (productId: string) => void;
 }
 
 const CartContext = createContext<CartContextType | undefined>(undefined);
@@ -20,14 +22,36 @@ const CartContext = createContext<CartContextType | undefined>(undefined);
 export const CartProvider: React.FC<{ children: ReactNode }> = ({
   children,
 }) => {
-  const [cart, setCart] = useState<Product[]>([]);
+  const [cart, setCart] = useState<CartItem[]>([]);
 
-  const addToCart = (product: Product) => {
-    setCart((prevCart) => [...prevCart, product]);
+  // Add item to cart (or update quantity if already in cart)
+  const addItemToCart = (product: Omit<CartItem, 'quantity'>) => {
+    console.log('Adding product:', product);
+
+    setCart((prevCart) => {
+      const existingItem = prevCart.find((item) => item.id === product.id);
+
+      if (existingItem) {
+        // If the item already exists, update its quantity
+        return prevCart.map((item) =>
+          item.id === product.id
+            ? { ...item, quantity: item.quantity + 1 }
+            : item,
+        );
+      }
+
+      // If the item doesn't exist, add it to the cart with quantity 1
+      return [...prevCart, { ...product, quantity: 1 }];
+    });
+  };
+
+  // Remove item from cart
+  const deleteItemFromCart = (productId: string) => {
+    setCart((prevCart) => prevCart.filter((item) => item.id !== productId));
   };
 
   return (
-    <CartContext.Provider value={{ cart, addToCart }}>
+    <CartContext.Provider value={{ cart, addItemToCart, deleteItemFromCart }}>
       {children}
     </CartContext.Provider>
   );

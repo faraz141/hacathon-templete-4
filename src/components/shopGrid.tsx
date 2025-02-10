@@ -33,14 +33,14 @@ export default function ShopGrid() {
   useEffect(() => {
     async function fetchProducts() {
       try {
-        const data: Products[] = await client.fetch(
-          '*[_type == "shopGrid"]{id, name, "imgUrl": img.asset->url, price, oldPrice}',
-          {},
-          { cache: 'no-store' },
-        );
-        setData(data);
+        const response = await fetch('/api/product/shopGrid'); // Call the API route
+        if (!response.ok) {
+          throw new Error('Failed to fetch products');
+        }
+        const data: Products[] = await response.json();
+        setData(data); // Update state with fetched products
       } catch (error) {
-        console.error('Failed to fetch products:', error);
+        console.error('Error fetching products:', error);
       }
     }
 
@@ -171,9 +171,11 @@ export default function ShopGrid() {
                   </div>
                   {/* <div className="mt-2 text-gray-600 flex justify-center items-center gap-2"> */}
                   <div className="my-1">
-                    <span className="text-gray-800 mx-4">{product.price}</span>
+                    <span className="text-gray-800 mx-4">
+                      ${product.oldPrice}
+                    </span>
                     <span className="text-red-600 font-medium line-through">
-                      {product.oldPrice}
+                      ${product.price}
                     </span>
                   </div>
 

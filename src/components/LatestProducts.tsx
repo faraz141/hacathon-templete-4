@@ -6,6 +6,7 @@ import { LuShoppingCart } from 'react-icons/lu';
 import { FaRegHeart, FaSearchPlus } from 'react-icons/fa';
 import { client } from '@/sanity/lib/client';
 import Link from 'next/link';
+import { ClipLoader } from 'react-spinners';
 
 // Define the product type
 interface Products {
@@ -17,24 +18,42 @@ interface Products {
 }
 
 export default function ProductsLatest() {
-  const [products, setProducts] = useState<Products[]>([]); // Specify state type as an array of Product
+  const [products, setProducts] = useState<Products[]>([]);
+  const [loading, setLoading] = useState(true);
+  // Specify state type as an array of Product
 
   useEffect(() => {
     async function fetchProducts() {
       try {
-        const data: Products[] = await client.fetch(
-          '*[_type == "latestProduct"]{id, name, "imgUrl": img.asset->url, price, oldPrice}',
-          {},
-          { cache: 'no-store' },
-        );
-        setProducts(data);
+        const response = await fetch('/api/product/latest'); // Call the API route
+        if (!response.ok) {
+          throw new Error('Failed to fetch products');
+        }
+        const data: Products[] = await response.json();
+        setProducts(data); // Update state with fetched products
       } catch (error) {
-        console.error('Failed to fetch products:', error);
+        console.error('Error fetching products:', error);
+      } finally {
+        setLoading(false);
       }
     }
 
     fetchProducts();
   }, []);
+  if (loading) {
+    return (
+      <div
+        style={{
+          display: 'flex',
+          justifyContent: 'center',
+          alignItems: 'center',
+          height: '100vh',
+        }}
+      >
+        <ClipLoader size={50} color="#FB2E86" />
+      </div>
+    );
+  }
 
   return (
     <div className="w-full bg-white py-20">
@@ -101,10 +120,10 @@ export default function ProductsLatest() {
                     </h3>
                     <div>
                       <span className="text-gray-800 mx-4">
-                        {product.price}
+                        ${product.price}
                       </span>
                       <span className="text-red-600 font-medium line-through">
-                        {product.oldPrice}
+                        ${product.oldPrice}
                       </span>
                     </div>
                   </div>

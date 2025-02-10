@@ -53,12 +53,12 @@ const LatestProduct = {
     {
       name: 'price',
       title: 'Price',
-      type: 'string',
+      type: 'number',
     },
     {
       name: 'oldPrice',
       title: 'oldPrice',
-      type: 'string',
+      type: 'number',
     },
     {
       name: 'description',

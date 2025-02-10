@@ -1,6 +1,8 @@
 'use client';
 import Image from 'next/image';
 import { client } from '@/sanity/lib/client';
+import { ClipLoader } from 'react-spinners';
+
 import {
   FaFacebookF,
   FaInstagram,
@@ -26,6 +28,7 @@ export default function Page({ params }: { params: { id: string } }) {
   const { id } = params;
 
   const [relatedProducts, setRelatedProducts] = useState<Product[]>([]);
+  const [successMessage, setSuccessMessage] = useState<string | null>(null);
 
   const [product, setProduct] = useState<Product | null>(null);
   const { addToCart } = useCart();
@@ -36,42 +39,57 @@ export default function Page({ params }: { params: { id: string } }) {
   useEffect(() => {
     const fetchProduct = async () => {
       try {
-        const fetchedProduct: Product = await client.fetch(
-          `*[_type == "shopGrid" && id == $id]{id, name, "imgUrl": img.asset->url, price, oldPrice}[0]`,
-          { id },
-        );
-
-        if (!fetchedProduct) {
-          setError('Product not found');
-        } else {
-          setProduct(fetchedProduct);
+        const res = await fetch(`/api/product/shopGrid/${id}`);
+        if (!res.ok) {
+          throw new Error(await res.text());
         }
+        const fetchedProduct: Product = await res.json();
+        setProduct(fetchedProduct);
       } catch (err) {
         setError('Failed to fetch product');
       } finally {
         setLoading(false);
       }
     };
+
     const fetchRelatedProducts = async () => {
       try {
-        const fetchedRelatedProducts: Product[] = await client.fetch(
-          '*[_type == "shopGrid"]{id, name, "imgUrl": img.asset->url, price, oldPrice}',
-          {},
-          { cache: 'no-store' },
-        );
-
+        const res = await fetch('/api/product/shopGrid');
+        if (!res.ok) {
+          throw new Error(await res.text());
+        }
+        const fetchedRelatedProducts: Product[] = await res.json();
         setRelatedProducts(fetchedRelatedProducts);
       } catch (err) {
         setError('Failed to fetch related products');
       }
     };
-    fetchRelatedProducts();
 
     fetchProduct();
+    fetchRelatedProducts();
   }, [id]);
+  const handleAddToCart = (product: Product) => {
+    addToCart(product);
+    setSuccessMessage('Successfully added to cart!');
 
+    // Clear the success message after 3 seconds
+    setTimeout(() => {
+      setSuccessMessage(null);
+    }, 3000);
+  };
   if (loading) {
-    return <div>Loading...</div>;
+    return (
+      <div
+        style={{
+          display: 'flex',
+          justifyContent: 'center',
+          alignItems: 'center',
+          height: '100vh',
+        }}
+      >
+        <ClipLoader size={50} color="#7E33E0" />
+      </div>
+    );
   }
 
   if (error) {
@@ -187,9 +205,15 @@ export default function Page({ params }: { params: { id: string } }) {
 
             <button
               className="bg-white pl-6 "
-              onClick={() => addToCart(product)}
+              // onClick={() => addToCart(product)}
             >
               <FaRegHeart className="w-4 h-4 text-[#151875]" />
+              <button
+                className="bg-blue-500 text-white px-4 py-2 rounded my-4"
+                onClick={() => handleAddToCart(product)}
+              >
+                Add To Cart
+              </button>
             </button>
           </div>
           <h4 className="text-[#0d134e] font-bold text-lg pl-4 my-2">
