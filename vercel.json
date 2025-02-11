@@ -6,5 +6,5 @@
       "use": "@vercel/next"
     }
   ],
-  "ignoreFiles": ["documentation/**"]
+  "ignoreFiles": ["Documentation/**"]
 }
